@@ -2,9 +2,7 @@
 
 > Module 1 · First Eval Lab · repo file `01-evaluation-strategy/eval-harness-proof.md`
 >
-> This lives in your `ai-evals` repo (the repo is your submission). It's the eval evidence behind the **Eval Results** slide of the final pitch deck you assemble in Module 6.
->
-> How you wired your first eval harness — an LLM-as-a-Judge running over a dataset — and beat the cold start by seeding a starter dataset. Capture the **setup and your definition of "good"** here; the full scored run against a curated golden set comes later. In Module 1 you *wire* the harness — you won't get a score yet (the dataset is near-empty), and that's expected. The first scored run comes in Module 2.
+> How I wired my first eval harness — an LLM-as-a-Judge running over a dataset — and beat the cold start by seeding a starter dataset. In Module 1 the harness is wired but not scored yet (the dataset is near-empty); the first scored run comes in Module 2.
 
 ## Version A — Concise (system prompt used)
 
@@ -22,31 +20,30 @@ Write a 100-word narrative summary highlighting wins first, then risks and next 
 
 ## Eval setup — dataset name + judge model/family
 
-_What dataset are you evaluating, which evaluator/metric, and which model judges it?_
+Dataset: `email_summary_quality_dataset` in LangSmith. Evaluator: `Conciseness (LLM-as-a-Judge)`.
 
-> Example: dataset `Module1Output`, evaluator `Conciseness (LLM-as-a-Judge)`. Generator = a small model from Provider X; **judge = a small model from a different family (Provider Y)** to avoid self-preference bias.
+Generator = GPT-5 mini (OpenAI). Judge = an OpenAI model as well, for this first wiring pass. **Known limitation:** the judge is from the same model family as the generator, which risks self-preference bias — I plan to swap the judge to a different family (e.g. Anthropic or Google) before the first scored run in Module 2.
 
-## Cold-start — the prompt you used to seed a starter dataset
+## Cold-start — the prompt I used to seed a starter dataset
 
-_You don't have production data yet. Paste the prompt you gave a chatbot to generate ~20 example rows so you can start evaluating today._
+```text
+Generate 20 example rows for evaluating email-summary quality.
+Each row: an input email + a candidate summary + a first-pass label ("good" or "bad") + a one-line reason.
+Make roughly half concise/faithful ("good") and half verbose or inaccurate ("bad").
+Return it as a markdown table.
+```
 
-> Example: "Generate 20 example rows for evaluating email-summary quality. Each row: input email + candidate summary + a first-pass label (good/bad) + one-line reason. Make ~half concise/faithful (good) and half verbose or inaccurate (bad). Return as a markdown table."
+## My definition of good vs bad (golden-set criteria)
 
-## Your definition of good vs bad (golden-set criteria)
+**Good** = faithful to the source email with no invented facts, keeps the key numbers (e.g. engagement +25%, open rate 42% to 35%), surfaces the decision-relevant items (video delay, Friday tracking-link deadline), and stays within the length limit (60 words or less for the concise format).
 
-_This rubric is the whole point — the judge only scores against what you decide "good" means._
-
-> Example: **Good** = faithful to the email, no invented facts, ≤60 words, decision-ready for a CEO. **Bad** = adds claims not in the source, buries the key number, or rambles past 100 words.
+**Bad** = adds claims not in the source, drops or buries a key number, hides risks behind positive framing, or rambles past 100 words so the CEO has to dig for the point.
 
 ## Screenshots — links or repo paths (optional if you followed the live demo)
 
-_Two screenshots: (1) your eval setup showing the dataset + judge, (2) your starter dataset rows. Paste image links, or commit images under `01-evaluation-strategy/screenshots/` and reference the path._
+Followed the instructor's live demo — screenshots to be added under `01-evaluation-strategy/screenshots/` in a follow-up commit.
 
 | What it shows | Screenshot / link |
 |---|---|
-| Eval setup (dataset + judge) | _…_ |
-| Starter dataset rows | _…_ |
-
----
-
-_Self-review: Is your judge from a **different model family** than the generator? Does your "good vs bad" rubric describe the product outcome, not just formatting? Could a teammate re-run this from your notes alone?_
+| Eval setup (dataset + judge) | _to add_ |
+| Starter dataset rows | _to add_ |
